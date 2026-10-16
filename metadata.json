@@ -1,0 +1,6 @@
+{
+  "name": "เช็คราคารับซื้อขี้ยางพารา ท่าศาลา นครศรีธรรมราช",
+  "description": "แอปพลิเคชันเปรียบเทียบจุดรับซื้อขี้ยางพารา/ก้อนยางพารา คำนวณรายได้สุทธิ หักความชื้น ค่าน้ำมัน และแสดงแผนที่เส้นทาง อ.ท่าศาลา จ.นครศรีธรรมราช",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
