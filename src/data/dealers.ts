@@ -10,6 +10,7 @@ export const DEFAULT_DEALERS: RubberDealer[] = [
   {
     id: 'dealer-1',
     name: 'ล้งประจักษ์พัฒนา (สาขาท่าขึ้น)',
+    distanceKm: 5.7,
     address: '142 หมู่ 3 ถ.สุราษฎร์-นครศรีฯ (ทล.401) ต.ท่าขึ้น อ.ท่าศาลา จ.นครศรีธรรมราช',
     subdistrict: 'ท่าขึ้น',
     district: 'ท่าศาลา',
@@ -27,6 +28,7 @@ export const DEFAULT_DEALERS: RubberDealer[] = [
   {
     id: 'dealer-2',
     name: 'ล้งท่าศาลาการยาง',
+    distanceKm: 11.4,
     address: '88/4 ใกล้สี่แยกท่าศาลา ต.ท่าศาลา อ.ท่าศาลา จ.นครศรีธรรมราช',
     subdistrict: 'ท่าศาลา',
     district: 'ท่าศาลา',
@@ -44,6 +46,7 @@ export const DEFAULT_DEALERS: RubberDealer[] = [
   {
     id: 'dealer-3',
     name: 'ล้งชัยมงคล รับซื้อยางก้อน',
+    distanceKm: 7.2,
     address: '25/1 ถ.สายท่าศาลา-นบพิตำ ต.โมคลาน อ.ท่าศาลา จ.นครศรีธรรมราช',
     subdistrict: 'โมคลาน',
     district: 'ท่าศาลา',
@@ -61,6 +64,7 @@ export const DEFAULT_DEALERS: RubberDealer[] = [
   {
     id: 'dealer-4',
     name: 'ล้งนครยางพารา (โพธิ์ทอง-หัวตะพาน)',
+    distanceKm: 12.3,
     address: '9/2 ต.โพธิ์ทอง อ.ท่าศาลา จ.นครศรีธรรมราช',
     subdistrict: 'โพธิ์ทอง',
     district: 'ท่าศาลา',
@@ -78,6 +82,7 @@ export const DEFAULT_DEALERS: RubberDealer[] = [
   {
     id: 'dealer-5',
     name: 'สหกรณ์กองทุนสวนยางท่าศาลา จำกัด',
+    distanceKm: 8.5,
     address: '55 หมู่ 1 ต.สระแก้ว อ.ท่าศาลา จ.นครศรีธรรมราช',
     subdistrict: 'สระแก้ว',
     district: 'ท่าศาลา',
@@ -95,6 +100,7 @@ export const DEFAULT_DEALERS: RubberDealer[] = [
   {
     id: 'dealer-6',
     name: 'ล้งกลายเจริญยางพารา',
+    distanceKm: 14.0,
     address: '112/3 เลียบคลองกลาย ต.กลาย อ.ท่าศาลา จ.นครศรีธรรมราช',
     subdistrict: 'กลาย',
     district: 'ท่าศาลา',

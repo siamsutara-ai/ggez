@@ -1,5 +1,4 @@
-import React from 'react';
-import { Home, FileText, Award } from 'lucide-react';
+import { Store, FileText, Award } from 'lucide-react';
 
 export type TabType = 'map' | 'input' | 'results';
 
@@ -17,17 +16,17 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   const tabs = [
     {
       id: 'map' as TabType,
-      label: 'หน้าแรก',
-      icon: Home,
+      label: 'ร้านรับซื้อ',
+      icon: Store,
     },
     {
       id: 'input' as TabType,
-      label: 'กรอกข้อมูล',
+      label: 'ข้อมูลก้อนยาง',
       icon: FileText,
     },
     {
       id: 'results' as TabType,
-      label: 'ผลการเปรียบเทียบ',
+      label: 'ผลเปรียบเทียบ',
       icon: Award,
       badge: bestPrice ? `${bestPrice} ฿` : undefined,
     },

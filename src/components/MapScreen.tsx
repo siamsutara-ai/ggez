@@ -220,6 +220,8 @@ export const MapScreen: React.FC<MapScreenProps> = ({
         iconAnchor: [47, 68],
       });
 
+      if (dealer.lat == null || dealer.lng == null) return;
+
       const marker = L.marker([dealer.lat, dealer.lng], {
         icon: dealerIcon,
         draggable: true,
@@ -270,7 +272,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({
       const routeGeo = routesMap[res.dealer.id];
       const coords = routeGeo?.coordinates || [
         [userLocation.lat, userLocation.lng],
-        [res.dealer.lat, res.dealer.lng],
+        [res.dealer.lat ?? userLocation.lat, res.dealer.lng ?? userLocation.lng],
       ];
 
       const polyline = L.polyline(coords as L.LatLngExpression[], {

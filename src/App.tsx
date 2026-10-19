@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Header } from './components/Header';
 import { BottomNav, TabType } from './components/BottomNav';
-import { MapScreen } from './components/MapScreen';
+import { DealerListScreen } from './components/DealerListScreen';
 import { InputScreen } from './components/InputScreen';
 import { ResultScreen } from './components/ResultScreen';
 import { DealerDetailModal } from './components/DealerDetailModal';
@@ -32,16 +32,31 @@ import {
 import { calculateDealerResults } from './utils/calculations';
 import { fetchRealRoadRoute, RouteGeometry } from './utils/routing';
 
+const INITIAL_CHANNELS: RubberDealer[] = [
+  {
+    id: 'dealer-1',
+    name: 'ร้านที่ 1 (ล้งใกล้บ้าน)',
+    distanceKm: 5.7,
+    pricePerKg: 72.50,
+  },
+  {
+    id: 'dealer-2',
+    name: 'ร้านที่ 2 (ล้งในเมือง)',
+    distanceKm: 11.4,
+    pricePerKg: 71.20,
+  },
+];
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('map');
 
-  // Candidate dealers that the user pins/adds themselves (starts empty by default)
+  // Candidate dealer channels where user fills in name, distance in km, and price
   const [dealers, setDealers] = useState<RubberDealer[]>(() => {
     try {
-      const saved = localStorage.getItem('rubber_user_pinned_dealers');
-      return saved ? JSON.parse(saved) : [];
+      const saved = localStorage.getItem('rubber_user_dealers_list');
+      return saved ? JSON.parse(saved) : INITIAL_CHANNELS;
     } catch {
-      return [];
+      return INITIAL_CHANNELS;
     }
   });
 
@@ -103,7 +118,7 @@ export default function App() {
   // Save changes to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem('rubber_user_pinned_dealers', JSON.stringify(dealers));
+      localStorage.setItem('rubber_user_dealers_list', JSON.stringify(dealers));
     } catch (e) {}
   }, [dealers]);
 
@@ -119,7 +134,22 @@ export default function App() {
     } catch (e) {}
   }, [input]);
 
-  // Fetch real road routes whenever userLocation or dealers change
+  // Sync distance updates from InputScreen
+  useEffect(() => {
+    const handler = (e: any) => {
+      if (e.detail) {
+        setDealers((prev) =>
+          prev.map((d) =>
+            d.id === e.detail.id ? { ...d, distanceKm: e.detail.distanceKm } : d
+          )
+        );
+      }
+    };
+    window.addEventListener('updateDealerDistance', handler);
+    return () => window.removeEventListener('updateDealerDistance', handler);
+  }, []);
+
+  // Fetch real road routes if coordinates exist
   useEffect(() => {
     let isCancelled = false;
 
@@ -128,13 +158,15 @@ export default function App() {
 
       for (const dealer of dealers) {
         if (isCancelled) return;
-        const route = await fetchRealRoadRoute(
-          userLocation.lat,
-          userLocation.lng,
-          dealer.lat,
-          dealer.lng
-        );
-        newRoutesMap[dealer.id] = route;
+        if (dealer.lat != null && dealer.lng != null) {
+          const route = await fetchRealRoadRoute(
+            userLocation.lat,
+            userLocation.lng,
+            dealer.lat,
+            dealer.lng
+          );
+          newRoutesMap[dealer.id] = route;
+        }
       }
 
       if (!isCancelled) {
@@ -160,6 +192,23 @@ export default function App() {
   }, [selectedDealer, results]);
 
   // Handler functions
+  const handleAddDealerSlot = () => {
+    const nextNum = dealers.length + 1;
+    const newDealer: RubberDealer = {
+      id: `dealer-${Date.now()}`,
+      name: `ร้านที่ ${nextNum}`,
+      distanceKm: 8.0,
+      pricePerKg: 71.50,
+    };
+    setDealers((prev) => [...prev, newDealer]);
+  };
+
+  const handleUpdateDealer = (dealerId: string, updates: Partial<RubberDealer>) => {
+    setDealers((prev) =>
+      prev.map((d) => (d.id === dealerId ? { ...d, ...updates } : d))
+    );
+  };
+
   const handleSaveDealer = (savedDealer: RubberDealer) => {
     setDealers((prev) => {
       const index = prev.findIndex((d) => d.id === savedDealer.id);
@@ -173,12 +222,6 @@ export default function App() {
     setEditingDealer(null);
     setShowDealerForm(false);
     setPresetFormCoords(null);
-  };
-
-  const handleUpdateDealerCoordinates = (dealerId: string, lat: number, lng: number) => {
-    setDealers((prev) =>
-      prev.map((d) => (d.id === dealerId ? { ...d, lat, lng } : d))
-    );
   };
 
   const handleDeleteDealer = (dealerId: string) => {
@@ -213,9 +256,9 @@ export default function App() {
   };
 
   const handleClearAllDealers = () => {
-    if (confirm('ต้องการล้างหมุดจุดรับซื้อทั้งหมดเพื่อปักหมุดใหม่หรือไม่?')) {
+    if (confirm('ต้องการล้างรายการร้านรับซื้อทั้งหมดเพื่อเริ่มกรอกใหม่หรือไม่?')) {
       setDealers([]);
-      localStorage.removeItem('rubber_user_pinned_dealers');
+      localStorage.removeItem('rubber_user_dealers_list');
     }
   };
 
@@ -226,7 +269,7 @@ export default function App() {
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
           <span className="font-semibold text-white">
-            ระบบคำนวณและวิเคราะห์จุดขายยางพาราที่คุ้มที่สุด (อ.ท่าศาลา จ.นครศรีธรรมราช)
+            ระบบเปรียบเทียบจุดรับซื้อยางพารา กรอกระยะทาง (กม.) และราคาเพื่อหาที่คุ้มที่สุด
           </span>
         </div>
 
@@ -297,17 +340,13 @@ export default function App() {
         {/* Main Content Router */}
         <main className="flex-1 overflow-y-auto relative">
           {activeTab === 'map' && (
-            <MapScreen
+            <DealerListScreen
               dealers={dealers}
-              userLocation={userLocation}
+              input={input}
               results={results}
-              routesMap={routesMap}
-              onUpdateUserLocation={setUserLocation}
-              onSelectDealer={(dealer) => setSelectedDealer(dealer)}
-              onEditDealer={handleEditDealer}
+              onAddDealer={handleAddDealerSlot}
+              onUpdateDealer={handleUpdateDealer}
               onDeleteDealer={handleDeleteDealer}
-              onSaveNewDealer={handleSaveDealer}
-              onUpdateDealerCoordinates={handleUpdateDealerCoordinates}
               onNavigateToInput={() => setActiveTab('input')}
               onNavigateToResults={() => setActiveTab('results')}
             />

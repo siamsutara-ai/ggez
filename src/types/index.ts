@@ -2,15 +2,16 @@ import { RouteGeometry } from '../utils/routing';
 
 export interface RubberDealer {
   id: string;
-  name: string;
+  name: string; // ชื่อร้าน/ล้งรับซื้อ สามารถกดแก้ไขได้
+  distanceKm?: number; // ระยะทางจากบ้านถึงร้าน (กิโลเมตร)
+  pricePerKg: number; // ราคารับซื้อที่ร้านนี้ให้ (บาท/กก.)
   address?: string;
   subdistrict?: string;
   district?: string;
   province?: string;
-  lat: number;
-  lng: number;
-  pricePerKg: number; // บาท/กก. ที่จุดรับซื้อให้
-  pinColor: string; // สีหมุดบนแผนที่
+  lat?: number;
+  lng?: number;
+  pinColor?: string; // สีประจำร้าน
   phone?: string;
   openHours?: string;
   moisturePolicy?: string; // คำอธิบายเกณฑ์หักความชื้น

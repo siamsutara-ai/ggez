@@ -46,24 +46,26 @@ export function calculateDealerResults(
     // Check if we have fetched real road route
     const cachedRoute = routesMap[dealer.id];
 
-    let distanceKm: number;
-    let drivingMinutes: number;
+    let distanceKm: number = 1;
 
-    if (input.manualDistanceKm != null && input.manualDistanceKm > 0) {
+    if (dealer.distanceKm != null && dealer.distanceKm > 0) {
+      distanceKm = dealer.distanceKm;
+    } else if (input.manualDistanceKm != null && input.manualDistanceKm > 0) {
       distanceKm = input.manualDistanceKm;
-      drivingMinutes = estimateDrivingMinutes(distanceKm);
     } else if (cachedRoute) {
       distanceKm = cachedRoute.distanceKm;
-      drivingMinutes = cachedRoute.durationMinutes;
-    } else {
+    } else if (dealer.lat != null && dealer.lng != null) {
       distanceKm = calculateRoadDistanceKm(
         userLocation.lat,
         userLocation.lng,
         dealer.lat,
         dealer.lng
       );
-      drivingMinutes = estimateDrivingMinutes(distanceKm);
+    } else {
+      distanceKm = 5;
     }
+
+    const drivingMinutes = estimateDrivingMinutes(distanceKm);
 
     // Moisture calculation:
     // Dealer's minimum deduction or actual rubber moisture estimate

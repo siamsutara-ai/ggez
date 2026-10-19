@@ -305,27 +305,62 @@ export const InputScreen: React.FC<InputScreenProps> = ({
                     </div>
                   </div>
 
-                  {/* Inline price modifier */}
-                  <div className="flex items-center justify-between gap-2 bg-white p-2 rounded-lg border border-slate-200">
-                    <span className="text-[11px] text-slate-500">
-                      ราคาที่ล้งให้วันนี้:
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={dealer.pricePerKg}
-                        onChange={(e) =>
-                          onUpdateDealerPrice(
-                            dealer.id,
-                            parseFloat(e.target.value) || 0
-                          )
-                        }
-                        className="w-20 bg-slate-50 border border-slate-300 rounded px-2 py-0.5 text-right font-bold text-emerald-700 text-xs"
-                      />
-                      <span className="text-xs text-slate-500 font-semibold">
-                        บาท/กก.
+                  {/* Inline distance and price modifiers */}
+                  <div className="grid grid-cols-2 gap-2 bg-white p-2.5 rounded-xl border border-slate-200 text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-500 font-medium block mb-0.5">
+                        ระยะทางจากบ้าน:
                       </span>
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          value={dealer.distanceKm ?? ''}
+                          onChange={(e) =>
+                            onUpdateDealerPrice(
+                              dealer.id,
+                              dealer.pricePerKg // keep price
+                            )
+                          }
+                          onInput={(e: any) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            // handled via custom event or updated handler
+                            const evt = new CustomEvent('updateDealerDistance', {
+                              detail: { id: dealer.id, distanceKm: val },
+                            });
+                            window.dispatchEvent(evt);
+                          }}
+                          className="w-full bg-slate-50 border border-slate-300 rounded px-2 py-1 text-right font-bold text-slate-800 text-xs"
+                        />
+                        <span className="text-[11px] text-slate-500 font-semibold shrink-0">
+                          กม.
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-slate-500 font-medium block mb-0.5">
+                        ราคารับซื้อ:
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="10"
+                          value={dealer.pricePerKg}
+                          onChange={(e) =>
+                            onUpdateDealerPrice(
+                              dealer.id,
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
+                          className="w-full bg-slate-50 border border-slate-300 rounded px-2 py-1 text-right font-bold text-emerald-700 text-xs"
+                        />
+                        <span className="text-[11px] text-slate-500 font-semibold shrink-0">
+                          บ./กก.
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

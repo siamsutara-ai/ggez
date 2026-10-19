@@ -320,7 +320,11 @@ ${maxSavings > 0 ? `👉 ได้เงินมากกว่าที่อ�
                   </button>
 
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${item.dealer.lat},${item.dealer.lng}`}
+                    href={
+                      item.dealer.lat && item.dealer.lng
+                        ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${item.dealer.lat},${item.dealer.lng}`
+                        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.dealer.name + ' รับซื้อยางพารา ท่าศาลา')}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs font-medium text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-colors"
@@ -334,13 +338,13 @@ ${maxSavings > 0 ? `👉 ได้เงินมากกว่าที่อ�
           })}
         </div>
 
-        {/* View on Map Button */}
+        {/* Back to Dealer List Button */}
         <button
           onClick={onViewOnMap}
           className="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-xs text-xs"
         >
           <MapPin className="w-4 h-4 text-emerald-400" />
-          ดูเปรียบเทียบทุกเส้นทางบนแผนที่
+          กลับไปดูรายการร้านรับซื้อ / ปรับระยะทางและราคา
         </button>
       </div>
     </div>
